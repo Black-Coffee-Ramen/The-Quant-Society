@@ -97,6 +97,17 @@
       opacity: 0.6; /* Slightly less opaque */
     }
 
+    /* 3D Animation Canvas */
+    #animation-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
     /* Glassmorphism Card for dark mode */
     .dark-card {
       background-color: rgba(31, 41, 55, 0.6); /* bg-gray-800/60 */
@@ -134,6 +145,13 @@
       border-radius: 50%;
       border: 3px solid #00ffc8;
     }
+
+    /* Footer styling */
+    .footer-trademark {
+      border-top: 1px solid rgba(55, 65, 81, 0.5);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+    }
   </style>
 </head>
 <body class="bg-black text-gray-300 font-sans overflow-x-hidden">
@@ -149,8 +167,11 @@
     </div>
   </div>
 
+  <!-- 3D Background Animation Canvas -->
+  <canvas id="animation-canvas"></canvas>
+
   <!-- Add padding-bottom to body to offset fixed nav bar -->
-  <main class="pb-16"> <!-- UPDATED: from pb-20 to pb-16 -->
+  <main class="pb-16 relative z-10">
 
     <!-- Home Section: bg-black with 3D Canvas -->
     <section id="home-section" class="min-h-screen flex items-center py-32 px-6 bg-black text-white relative overflow-hidden">
@@ -608,6 +629,18 @@
       </div>
     </section>
 
+    <!-- Footer with Trademark -->
+    <footer class="footer-trademark py-8 px-6 text-center">
+      <div class="max-w-6xl mx-auto">
+        <p class="text-gray-400 font-mono text-sm">
+          © 2025 The Quant Society - IIIT Delhi. All rights reserved.
+        </p>
+        <p class="text-gray-500 text-xs mt-2">
+          Trademark of The Quant Society, Indraprastha Institute of Information Technology, Delhi
+        </p>
+      </div>
+    </footer>
+
   </main>
   
   <!-- NEW: ScrollSpy Navigation Bar -->
@@ -637,142 +670,224 @@
 
   <!-- Main Application Logic -->
   <script type="module">
-    // --- START: New Three.js Flowing Fibers Animation ---
-    if (typeof THREE === 'undefined' || typeof perlin === 'undefined') {
-      console.error('Three.js or Perlin Noise failed to load!');
-    } else {
-      let scene, camera, renderer, clock;
-      let lines = [];
-      const lineCount = 3000; // Number of fibers
-      const segmentCount = 30; // Segments per fiber
-      let containerWidth, containerHeight;
-      const canvas = document.getElementById('home-canvas');
-      let mouse = new THREE.Vector2();
-
-      const initFlowAnimation = () => {
-        scene = new THREE.Scene();
-        clock = new THREE.Clock();
-        perlin.seed(Math.random());
-
-        const container = canvas.parentElement;
-        containerWidth = container.clientWidth;
-        containerHeight = container.clientHeight;
-
-        camera = new THREE.PerspectiveCamera(75, containerWidth / containerHeight, 0.1, 1000);
-        camera.position.z = 150;
-        
-        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-        renderer.setSize(containerWidth, containerHeight);
-        renderer.setClearColor(0x000000, 0); // Transparent background
-
-        // Create all the lines
-        for (let i = 0; i < lineCount; i++) {
-          const positions = new Float32Array((segmentCount + 1) * 3);
-          const geometry = new THREE.BufferGeometry();
-          geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-          
-          const material = new THREE.LineBasicMaterial({
-            color: new THREE.Color().setHSL(0.6 + Math.random() * 0.2, 0.7, 0.5 + Math.random() * 0.2), // Purple/blue tones
-            transparent: true,
-            opacity: 0.1 + Math.random() * 0.2,
-            linewidth: 1
-          });
-          
-          const line = new THREE.Line(geometry, material);
-          
-          // Store custom data for animation
-          line.userData.originalPos = new THREE.Vector3(
-            (Math.random() - 0.5) * 400,
-            (Math.random() - 0.5) * 300,
-            (Math.random() - 0.5) * 400
-          );
-          line.userData.noiseSpeed = Math.random() * 0.005 + 0.002;
-          line.userData.noiseScale = Math.random() * 0.1 + 0.05;
-          line.userData.flowSpeed = Math.random() * 0.5 + 0.2;
-          
-          scene.add(line);
-          lines.push(line);
-        }
-        
-        window.addEventListener('resize', onWindowResize);
-        window.addEventListener('mousemove', onMouseMove);
-        onWindowResize();
-        animate();
-      };
-      
-      const animate = () => {
-        requestAnimationFrame(animate);
-        
-        const time = clock.getElapsedTime();
-        
-        lines.forEach(line => {
-          const positions = line.geometry.attributes.position.array;
-          const original = line.userData.originalPos;
-          const noiseSpeed = line.userData.noiseSpeed;
-          const noiseScale = line.userData.noiseScale;
-          const flowSpeed = line.userData.flowSpeed;
-
-          let currentPos = original.clone();
-          
-          for (let i = 0; i <= segmentCount; i++) {
-            const i3 = i * 3;
-            
-            positions[i3] = currentPos.x;
-            positions[i3 + 1] = currentPos.y;
-            positions[i3 + 2] = currentPos.z;
-            
-            // Get 3D noise
-            let noise = perlin.noise(
-              currentPos.x * noiseScale + time * 0.05, 
-              currentPos.y * noiseScale, 
-              currentPos.z * noiseScale
-            );
-            
-            // Create flow direction
-            let flow = new THREE.Vector3(
-              Math.sin(currentPos.y * 0.05 + time * flowSpeed * 0.5) + noise,
-              Math.cos(currentPos.x * 0.05 + time * flowSpeed * 0.5) + noise,
-              Math.sin(currentPos.z * 0.05 + time * flowSpeed * 0.5) + noise
-            );
-            
-            currentPos.add(flow.multiplyScalar(2)); // Move to next point
-          }
-          
-          line.geometry.attributes.position.needsUpdate = true;
-          
-          // Move the whole line's origin to simulate flow
-          original.z += flowSpeed; 
-          if (original.z > 200) original.z = -200;
+    // --- START: Interactive 3D Particle Constellation Animation ---
+    class ParticleNetwork {
+      constructor() {
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        this.renderer = new THREE.WebGLRenderer({ 
+          canvas: document.getElementById('animation-canvas'),
+          alpha: true,
+          antialias: true 
         });
         
-        // Rotate the whole system based on mouse
-        scene.rotation.x = mouse.y * 0.1;
-        scene.rotation.y = mouse.x * 0.1;
+        this.particles = [];
+        this.lines = [];
+        this.mouse = new THREE.Vector2(0, 0);
+        this.mouseActive = false;
         
-        renderer.render(scene, camera);
-      };
-      
-      const onWindowResize = () => {
-        const container = canvas.parentElement;
-        if (!container) return; 
-        
-        containerWidth = container.clientWidth;
-        containerHeight = container.clientHeight;
-        
-        camera.aspect = containerWidth / containerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(containerWidth, containerHeight);
-      };
-
-      const onMouseMove = (event) => {
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        this.init();
       }
       
-      // REMOVED: The immediate call to initFlowAnimation() was here, causing the error.
+      init() {
+        // Setup renderer
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setClearColor(0x000000, 0);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        
+        // Setup camera
+        this.camera.position.z = 500;
+        
+        // Create particles
+        this.createParticles(150);
+        
+        // Create line system
+        this.createLineSystem();
+        
+        // Event listeners
+        window.addEventListener('resize', () => this.onWindowResize());
+        window.addEventListener('mousemove', (e) => this.onMouseMove(e));
+        window.addEventListener('mouseenter', () => this.mouseActive = true);
+        window.addEventListener('mouseleave', () => this.mouseActive = false);
+        
+        // Start animation
+        this.animate();
+      }
       
+      createParticles(count) {
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(count * 3);
+        const colors = new Float32Array(count * 3);
+        
+        for (let i = 0; i < count; i++) {
+          const i3 = i * 3;
+          // Random positions in a sphere
+          const radius = 400;
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+          
+          positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+          positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+          positions[i3 + 2] = radius * Math.cos(phi);
+          
+          // Colors - teal/accent color
+          colors[i3] = 0; // R
+          colors[i3 + 1] = 1; // G - teal
+          colors[i3 + 2] = 0.78; // B
+        }
+        
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        
+        const material = new THREE.PointsMaterial({
+          size: 3,
+          vertexColors: true,
+          transparent: true,
+          opacity: 0.8,
+          blending: THREE.AdditiveBlending,
+          sizeAttenuation: true
+        });
+        
+        this.particleSystem = new THREE.Points(geometry, material);
+        this.scene.add(this.particleSystem);
+        
+        // Store individual particle data
+        this.particleData = [];
+        const positionsArray = this.particleSystem.geometry.attributes.position.array;
+        
+        for (let i = 0; i < count; i++) {
+          this.particleData.push({
+            originalX: positionsArray[i * 3],
+            originalY: positionsArray[i * 3 + 1],
+            originalZ: positionsArray[i * 3 + 2],
+            noiseOffset: Math.random() * 1000,
+            speed: 0.2 + Math.random() * 0.3
+          });
+        }
+      }
+      
+      createLineSystem() {
+        this.lineGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(150 * 150 * 3 * 2); // Maximum possible lines
+        this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        
+        const material = new THREE.LineBasicMaterial({
+          color: 0x00ffc8,
+          transparent: true,
+          opacity: 0.3,
+          blending: THREE.AdditiveBlending
+        });
+        
+        this.lineSystem = new THREE.LineSegments(this.lineGeometry, material);
+        this.scene.add(this.lineSystem);
+      }
+      
+      onWindowResize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+      
+      onMouseMove(event) {
+        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      }
+      
+      animate() {
+        requestAnimationFrame(() => this.animate());
+        
+        const time = Date.now() * 0.001;
+        const positions = this.particleSystem.geometry.attributes.position.array;
+        const linePositions = this.lineSystem.geometry.attributes.position.array;
+        
+        // Reset line positions
+        for (let i = 0; i < linePositions.length; i++) {
+          linePositions[i] = 0;
+        }
+        
+        let lineIndex = 0;
+        const maxDistance = 80; // Distance threshold for connecting particles
+        const mouseInfluence = 100;
+        
+        // Update particle positions
+        for (let i = 0; i < this.particleData.length; i++) {
+          const i3 = i * 3;
+          const data = this.particleData[i];
+          
+          // Perlin noise movement
+          const noiseX = perlin.noise(data.noiseOffset + time * data.speed, 0, 0);
+          const noiseY = perlin.noise(0, data.noiseOffset + time * data.speed, 0);
+          const noiseZ = perlin.noise(0, 0, data.noiseOffset + time * data.speed);
+          
+          positions[i3] = data.originalX + noiseX * 20;
+          positions[i3 + 1] = data.originalY + noiseY * 20;
+          positions[i3 + 2] = data.originalZ + noiseZ * 20;
+          
+          // Mouse interaction
+          if (this.mouseActive) {
+            const particleScreenPos = new THREE.Vector3(positions[i3], positions[i3 + 1], positions[i3 + 2]);
+            particleScreenPos.project(this.camera);
+            
+            const distanceToMouse = Math.sqrt(
+              Math.pow(particleScreenPos.x - this.mouse.x, 2) + 
+              Math.pow(particleScreenPos.y - this.mouse.y, 2)
+            );
+            
+            if (distanceToMouse < 0.2) {
+              // Push particles away from mouse
+              const pushForce = (0.2 - distanceToMouse) * mouseInfluence;
+              positions[i3] += (positions[i3] - this.mouse.x * 500) * pushForce * 0.001;
+              positions[i3 + 1] += (positions[i3 + 1] - this.mouse.y * 500) * pushForce * 0.001;
+            }
+          }
+          
+          // Check connections with other particles
+          for (let j = i + 1; j < this.particleData.length; j++) {
+            const j3 = j * 3;
+            const dx = positions[i3] - positions[j3];
+            const dy = positions[i3 + 1] - positions[j3 + 1];
+            const dz = positions[i3 + 2] - positions[j3 + 2];
+            const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            
+            if (distance < maxDistance) {
+              // Create line between particles
+              const opacity = 1 - (distance / maxDistance);
+              
+              if (lineIndex < linePositions.length - 6) {
+                // Start point
+                linePositions[lineIndex] = positions[i3];
+                linePositions[lineIndex + 1] = positions[i3 + 1];
+                linePositions[lineIndex + 2] = positions[i3 + 2];
+                
+                // End point
+                linePositions[lineIndex + 3] = positions[j3];
+                linePositions[lineIndex + 4] = positions[j3 + 1];
+                linePositions[lineIndex + 5] = positions[j3 + 2];
+                
+                lineIndex += 6;
+              }
+            }
+          }
+        }
+        
+        // Update geometries
+        this.particleSystem.geometry.attributes.position.needsUpdate = true;
+        this.lineSystem.geometry.attributes.position.needsUpdate = true;
+        this.lineSystem.geometry.setDrawRange(0, lineIndex / 3);
+        
+        // Gentle rotation
+        this.particleSystem.rotation.y = time * 0.05;
+        this.lineSystem.rotation.y = time * 0.05;
+        
+        this.renderer.render(this.scene, this.camera);
+      }
     }
-    // --- END: Three.js Logic ---
+    
+    // Initialize the particle network when Three.js is loaded
+    if (typeof THREE !== 'undefined' && typeof perlin !== 'undefined') {
+      new ParticleNetwork();
+    }
+    // --- END: Interactive 3D Particle Constellation Animation ---
 
     // --- START: Page Logic ---
     
@@ -865,18 +980,6 @@
     window.onload = () => {
       lucide.createIcons();
       onScroll(); // Run once on load to set initial state
-      
-      // NEW: Start the 3D animation only after everything is loaded
-      if (typeof THREE !== 'undefined' && typeof perlin !== 'undefined') {
-        const canvas = document.getElementById('home-canvas');
-        if (canvas) {
-          initFlowAnimation();
-        } else {
-          console.error('Canvas #home-canvas not found');
-        }
-      } else {
-        console.error('Three.js or Perlin Noise failed to load!');
-      }
     };
     // --- END: Page Logic ---
   </script>
