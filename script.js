@@ -99,30 +99,14 @@ window.addEventListener('scroll', () => {
 let scrollToTopBtn = document.createElement('button');
 scrollToTopBtn.innerHTML = '↑';
 scrollToTopBtn.setAttribute('id', 'scrollToTop');
-scrollToTopBtn.style.cssText = `
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--secondary-color);
-    color: white;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 999;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-`;
+scrollToTopBtn.className = 'scroll-to-top';
 document.body.appendChild(scrollToTopBtn);
 
 window.addEventListener('scroll', () => {
     if (window.pageYOffset > 300) {
-        scrollToTopBtn.style.opacity = '1';
+        scrollToTopBtn.classList.add('visible');
     } else {
-        scrollToTopBtn.style.opacity = '0';
+        scrollToTopBtn.classList.remove('visible');
     }
 });
 
@@ -132,22 +116,6 @@ scrollToTopBtn.addEventListener('click', () => {
         behavior: 'smooth'
     });
 });
-
-// Counter animation for statistics (if needed in the future)
-function animateCounter(element, target, duration = 2000) {
-    let start = 0;
-    const increment = target / (duration / 16);
-    
-    const timer = setInterval(() => {
-        start += increment;
-        if (start >= target) {
-            element.textContent = target;
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(start);
-        }
-    }, 16);
-}
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
