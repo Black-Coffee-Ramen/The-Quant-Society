@@ -15,7 +15,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   
   <!-- 4. Load Perlin Noise for animation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/perlin/1.0.0/perlin.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/perlin.js/1.0.3/perlin.min.js"></script>
   
   <!-- 5. Load Professional Fonts (Inter + Roboto Mono) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -125,11 +125,29 @@
       font-weight: 700;
       transform: scale(1.05);
     }
+
+    /* Team member image styling */
+    .team-member-img {
+      width: 96px;
+      height: 96px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #00ffc8;
+    }
   </style>
 </head>
 <body class="bg-black text-gray-300 font-sans overflow-x-hidden">
 
-  <!-- REMOVED: Top navigation bar -->
+  <!-- Logo Section -->
+  <div class="fixed top-6 left-6 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 relative">
+        <!-- Place your logo.png file in the same folder -->
+        <img src="logo.png" alt="Quant Society Logo" class="w-full h-full object-contain">
+      </div>
+      <span class="text-xl font-bold text-accent font-mono hidden md:block">The Quant Society</span>
+    </div>
+  </div>
 
   <!-- Add padding-bottom to body to offset fixed nav bar -->
   <main class="pb-16"> <!-- UPDATED: from pb-20 to pb-16 -->
@@ -217,33 +235,134 @@
 
         <div class="space-y-8">
           <h3 class="text-3xl font-semibold text-accent text-center">Meet The Team</h3>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Core Team (First 4) -->
             <div class="dark-card p-6 text-center space-y-4">
-              <div class="w-24 h-24 bg-gradient-to-br from-accent to-[#00a87d] rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-black">AS</div>
+              <img src="arjun_sharma.png" alt="Arjun Sharma" class="team-member-img mx-auto">
               <div>
                 <h4 class="text-xl font-semibold text-white">Arjun Sharma</h4>
                 <p class="text-accent font-medium text-center">President</p>
               </div>
             </div>
             <div class="dark-card p-6 text-center space-y-4">
-              <div class="w-24 h-24 bg-gradient-to-br from-accent to-[#00a87d] rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-black">PP</div>
+              <img src="priya_patel.png" alt="Priya Patel" class="team-member-img mx-auto">
               <div>
                 <h4 class="text-xl font-semibold text-white">Priya Patel</h4>
                 <p class="text-accent font-medium text-center">Vice President</p>
               </div>
             </div>
             <div class="dark-card p-6 text-center space-y-4">
-              <div class="w-24 h-24 bg-gradient-to-br from-accent to-[#00a87d] rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-black">RV</div>
+              <img src="rohan_verma.png" alt="Rohan Verma" class="team-member-img mx-auto">
               <div>
                 <h4 class="text-xl font-semibold text-white">Rohan Verma</h4>
                 <p class="text-accent font-medium text-center">Technical Head</p>
               </div>
             </div>
             <div class="dark-card p-6 text-center space-y-4">
-              <div class="w-24 h-24 bg-gradient-to-br from-accent to-[#00a87d] rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-black">AS</div>
+              <img src="ananya_singh.png" alt="Ananya Singh" class="team-member-img mx-auto">
               <div>
                 <h4 class="text-xl font-semibold text-white">Ananya Singh</h4>
                 <p class="text-accent font-medium text-center">Events Coordinator</p>
+              </div>
+            </div>
+
+            <!-- Additional Team Members -->
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="vikram_mehta.png" alt="Vikram Mehta" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Vikram Mehta</h4>
+                <p class="text-accent font-medium text-center">Research Lead</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="neha_gupta.png" alt="Neha Gupta" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Neha Gupta</h4>
+                <p class="text-accent font-medium text-center">Data Science Head</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="rahul_kumar.png" alt="Rahul Kumar" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Rahul Kumar</h4>
+                <p class="text-accent font-medium text-center">Algo Trading Lead</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="sneha_sharma.png" alt="Sneha Sharma" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Sneha Sharma</h4>
+                <p class="text-accent font-medium text-center">Finance Head</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="amit_verma.png" alt="Amit Verma" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Amit Verma</h4>
+                <p class="text-accent font-medium text-center">Web Developer</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="pooja_singh.png" alt="Pooja Singh" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Pooja Singh</h4>
+                <p class="text-accent font-medium text-center">Content Writer</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="raj_malhotra.png" alt="Raj Malhotra" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Raj Malhotra</h4>
+                <p class="text-accent font-medium text-center">Outreach Coordinator</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="divya_patel.png" alt="Divya Patel" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Divya Patel</h4>
+                <p class="text-accent font-medium text-center">Design Head</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="karan_singh.png" alt="Karan Singh" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Karan Singh</h4>
+                <p class="text-accent font-medium text-center">ML Research</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="meera_sharma.png" alt="Meera Sharma" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Meera Sharma</h4>
+                <p class="text-accent font-medium text-center">Quant Analyst</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="varun_gupta.png" alt="Varun Gupta" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Varun Gupta</h4>
+                <p class="text-accent font-medium text-center">Risk Analyst</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="anika_verma.png" alt="Anika Verma" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Anika Verma</h4>
+                <p class="text-accent font-medium text-center">PR Manager</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="aditya_kumar.png" alt="Aditya Kumar" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Aditya Kumar</h4>
+                <p class="text-accent font-medium text-center">Backend Developer</p>
+              </div>
+            </div>
+            <div class="dark-card p-6 text-center space-y-4">
+              <img src="isha_patel.png" alt="Isha Patel" class="team-member-img mx-auto">
+              <div>
+                <h4 class="text-xl font-semibold text-white">Isha Patel</h4>
+                <p class="text-accent font-medium text-center">Event Manager</p>
               </div>
             </div>
           </div>
@@ -354,7 +473,7 @@
             <div class="w-16 h-16 bg-accent/20 rounded-lg flex items-center justify-center text-accent mx-auto">
               <i data-lucide="brain-circuit" class="w-8 h-8"></i>
             </div>
-            <div classs="space-y-3">
+            <div class="space-y-3">
               <h3 class="text-xl font-semibold text-white text-center">Quantitative Research</h3>
               <p class="text-gray-400 text-sm text-center">In-depth lecture notes and research papers on stochastic calculus, derivative pricing, and modern risk models.</p>
             </div>
@@ -455,7 +574,6 @@
                   <h4 class="text-accent font-medium mb-1">Location</h4>
                   <p class="text-gray-300">IIIT Delhi, Okhla Phase III</p>
                   <p class="text-gray-300">New Delhi - 110020</p>
-
                 </div>
               </div>
               <div class="flex items-start gap-4">
@@ -493,8 +611,7 @@
   </main>
   
   <!-- NEW: ScrollSpy Navigation Bar -->
-  <!-- UPDATED: from h-20 to h-16 -->
-  <div id="progress-nav-container" class="fixed bottom-0 left-0 right-0 h-16 z-40">
+  <div id="progress-nav-container" class="fixed bottom-0 left-0 right-0 h-10 z-40">
     <!-- Progress Indicator -->
     <div id="progress-indicator" class="absolute top-0 left-0 h-full w-0"></div>
     
@@ -509,7 +626,6 @@
     </div>
   </div>
 
-
   <!-- Modal: Dark style -->
   <div id="alert-modal" class="fixed inset-0 z-50 items-center justify-center bg-black/80 p-4 hidden">
     <div class="dark-card p-8 w-full max-w-sm text-center shadow-lg shadow-accent/30 border-accent">
@@ -518,7 +634,6 @@
       <button id="alert-close" class="px-6 py-2 bg-accent text-black font-bold rounded-lg hover:bg-opacity-90 transition-colors">Close</button>
     </div>
   </div>
-
 
   <!-- Main Application Logic -->
   <script type="module">
@@ -659,7 +774,6 @@
     }
     // --- END: Three.js Logic ---
 
-
     // --- START: Page Logic ---
     
     // Modal Logic
@@ -690,8 +804,6 @@
       showAlert('Message Sent!', 'We will get back to you soon.');
     });
 
-    // REMOVED: Mobile Menu Logic
-    
     // Event Tabs Logic
     const upcomingTab = document.getElementById('upcoming-tab');
     const pastTab = document.getElementById('past-tab');
@@ -749,7 +861,6 @@
     window.addEventListener('scroll', onScroll);
     // --- END: Scroll Spy Logic ---
 
-
     // Initial load
     window.onload = () => {
       lucide.createIcons();
@@ -768,10 +879,6 @@
       }
     };
     // --- END: Page Logic ---
-
   </script>
 </body>
 </html>
-
-
-
